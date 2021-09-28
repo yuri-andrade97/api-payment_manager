@@ -1,6 +1,9 @@
 const knex = require('../config/conecction');
 const bcrypt = require('bcrypt');
-const schemaRegisterUser = require('../validations/schemaRegisterUsers')
+const jwt = require('jsonwebtoken');
+const nodemailer = require('../nodemailer');
+const schemaRegisterUser = require('../validations/schemaRegisterUsers');
+const schemaLoginUser = require('../validations/schemaLoginUser');
 
 const registerUser = async (req, res) => {
   const {
@@ -31,13 +34,62 @@ const registerUser = async (req, res) => {
       return res.status(400).json('O usuário não foi cadastrado.');
     }
 
+    const dataSendEmail = {
+      from: 'Payment Manager <nao-responder@paymentmanager.com.br>',
+      to: email,
+      subject: 'Bem vindo ao Payment Manager',
+      text: `Olá ${nome}. Você realizou um cadastro no Payment Manager, Seja Bem vindo!`
+    }
+
+    nodemailer.sendMail(dataSendEmail);
+
     return res.status(200).json('Conta criada com sucesso!');
   } catch (error) {
     return res.status(400).json(error.message);
   }
 
-}
+};
+
+const loginUser = async (req, res) => {
+  const {email, senha} = req.body;
+
+  try {
+    await schemaLoginUser.validate(req.body);
+
+    const validatingData = await knex('usuarios').select('*').where('email', email);
+
+    if (validatingData.length < 1) {
+      return res.json('Email não existe no sistema.');
+    }
+
+    const dataUser = validatingData[0];
+
+    const validatingPassword = await bcrypt.compare(senha, dataUser.senha);
+
+    if (!validatingPassword) {
+      return res.status(400).json('Senha incorreta.');
+    }
+
+    const token = jwt.sign({
+      id: dataUser.id,
+      nome: dataUser.nome,
+      email: dataUser.email
+    }, process.env.JWT_TOKEN)
+
+    const { senha: batatinha, ...user } = dataUser;
+
+    return res.status(200).json({
+      usuario: user,
+      token
+    })
+
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
+
+};
 
 module.exports = {
   registerUser,
+  loginUser,
 }
