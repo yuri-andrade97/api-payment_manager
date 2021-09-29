@@ -80,8 +80,6 @@ const loginUser = async (req, res) => {
 
     const { senha: batatinha, ...user } = dataUser;
 
-    return res.json(req.headers)
-
     return res.status(200).json({
       usuario: user,
       token
