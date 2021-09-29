@@ -53,6 +53,8 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   const {email, senha} = req.body;
 
+  console.log(req.headers)
+
   try {
     await schemaLoginUser.validate(req.body);
 
