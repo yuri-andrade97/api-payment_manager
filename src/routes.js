@@ -5,9 +5,10 @@ const authToken = require('./middlewares/authToken')
 const user = require('./controllers/user');
 
 // Routes Users
-routes.use(authToken)
 routes.post("/", user.registerUser);
 routes.post("/login", user.loginUser);
+routes.use(authToken);
+routes.put("/editar", user.editUser)
 
 
 module.exports = routes;

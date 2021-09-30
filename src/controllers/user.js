@@ -93,11 +93,12 @@ const loginUser = async (req, res) => {
 
 };
 
-const updateUser = async (req, res) => {
+const editUser = async (req, res) => {
   const { nome, email, senha, cpf } = req.body;
 }
 
 module.exports = {
   registerUser,
   loginUser,
+  editUser,
 }
