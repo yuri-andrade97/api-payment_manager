@@ -12,6 +12,8 @@ const registerUser = async (req, res) => {
     senha
   } = req.body;
 
+  console.log(req.body);
+
   try {
     //validando dados enviados pelo usuário
     await schemaRegisterUser.validate(req.body);
