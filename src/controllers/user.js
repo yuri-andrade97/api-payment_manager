@@ -2,7 +2,7 @@ const knex = require('../config/connection');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('../nodemailer');
-const schemaRegisterUser = require('../validations/schemaRegisterUsers');
+const schemaRegisterUser = require('../validations/schemaRegisterUser');
 const schemaLoginUser = require('../validations/schemaLoginUser');
 
 const registerUser = async (req, res) => {
@@ -55,8 +55,6 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   const {email, senha} = req.body;
 
-  console.log(req.headers)
-
   try {
     await schemaLoginUser.validate(req.body);
 
@@ -95,6 +93,8 @@ const loginUser = async (req, res) => {
 
 const editUser = async (req, res) => {
   const { nome, email, senha, cpf } = req.body;
+
+
 }
 
 module.exports = {
