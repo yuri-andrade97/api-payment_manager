@@ -1,4 +1,4 @@
-const knex = require('../config/conecction');
+const knex = require('../config/connection');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('../nodemailer');
@@ -92,6 +92,10 @@ const loginUser = async (req, res) => {
   }
 
 };
+
+const updateUser = async (req, res) => {
+  const { nome, email, senha, cpf } = req.body;
+}
 
 module.exports = {
   registerUser,
