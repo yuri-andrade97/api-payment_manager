@@ -12,6 +12,9 @@ const registerUser = async (req, res) => {
     senha
   } = req.body;
 
+
+  return res.json(senha)
+
   try {
     //validando dados enviados pelo usuário
     await schemaRegisterUser.validate(req.body);
