@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('../nodemailer');
 const schemaRegisterUser = require('../validations/schemaRegisterUser');
 const schemaLoginUser = require('../validations/schemaLoginUser');
+const schemaEditUser = require('../validations/schemaEditUser');
+
 
 const registerUser = async (req, res) => {
   const {
@@ -11,8 +13,6 @@ const registerUser = async (req, res) => {
     email,
     senha
   } = req.body;
-
-  console.log(req.body);
 
   try {
     //validando dados enviados pelo usuário
@@ -92,10 +92,46 @@ const loginUser = async (req, res) => {
 };
 
 const editUser = async (req, res) => {
-  const { nome, email, senha, cpf } = req.body;
+  const { nome, email, senha, cpf, telefone } = req.body;
+
+  const user = req.infoUser
+
+  try {
+    await schemaEditUser.validate(req.body);
+
+    const checkIfEmailExists = await knex('usuarios').select('*').where('email', email);
 
 
-}
+
+    if (checkIfEmailExists.length == 1) {
+      if (checkIfEmailExists[0].email !== email) {
+        return res.status(400).json('Email já cadastrado no sistema.');
+      }
+
+      console.log('deu certo papito')
+    }
+
+    const encryptedPassword = await bcrypt.hash(senha, 10);
+
+    const editingUser = await knex('usuarios').update({
+      nome,
+      email,
+      senha: encryptedPassword,
+      cpf,
+      telefone
+    }).where('id', user.id).returning('*')
+
+    if (editingUser.length < 1) {
+      return res.status(400).json('Não foi possível atualizar os dados do usuário!')
+    }
+
+    return res.status(200).json('Dados atualizados com sucesso!')
+
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
+
+};
 
 module.exports = {
   registerUser,

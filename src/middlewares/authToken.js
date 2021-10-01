@@ -19,6 +19,7 @@ const authToken = async (req, res, next) => {
       return res.status(400).json('Usuário não encontrado');
     }
     const { senha, ...user } = searchingUser;
+
     req.infoUser = user;
 
     next();
