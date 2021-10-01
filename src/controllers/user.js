@@ -133,8 +133,15 @@ const editUser = async (req, res) => {
 
 };
 
+const getUserData = async (req, res) => {
+  const userData = req.infoUser
+
+  return res.status(200).json(userData)
+};
+
 module.exports = {
   registerUser,
   loginUser,
   editUser,
+  getUserData,
 }
