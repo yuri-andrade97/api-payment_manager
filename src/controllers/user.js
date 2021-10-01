@@ -101,15 +101,12 @@ const editUser = async (req, res) => {
 
     const checkIfEmailExists = await knex('usuarios').select('*').where('email', email);
 
-
-
     if (checkIfEmailExists.length == 1) {
-      if (checkIfEmailExists[0].email !== email) {
+
+
+
         return res.status(400).json('Email já cadastrado no sistema.');
       }
-
-      console.log('deu certo papito')
-    }
 
     const encryptedPassword = await bcrypt.hash(senha, 10);
 

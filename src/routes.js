@@ -8,7 +8,7 @@ const user = require('./controllers/user');
 routes.post("/signup", user.registerUser);
 routes.post("/login", user.loginUser);
 routes.use(authToken);
-routes.put("/getDataUser", user.getUserData)
+routes.get("/getDataUser", user.getUserData)
 routes.put("/edit", user.editUser)
 
 
