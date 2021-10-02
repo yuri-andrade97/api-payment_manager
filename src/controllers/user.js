@@ -139,6 +139,12 @@ const registerClient = async (req, res) => {
 
     await schemaRegisterClient.validate(req.body);
 
+    const verifyIfEmailAlreadyExists = await knex('clientes').select('*').where('email', email);
+
+    if (verifyIfEmailAlreadyExists.length > 0) {
+      return res.status(400).json('E-mail já cadastrado.');
+    };
+
     const registeringClient = await knex('clientes').insert({
       nome,
       id_usuario: dataToken.id,
