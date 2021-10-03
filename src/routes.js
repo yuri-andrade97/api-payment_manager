@@ -7,14 +7,11 @@ const user = require('./controllers/user');
 // Routes Users
 routes.post("/signup", user.registerUser);
 routes.post("/login", user.loginUser);
-
-routes.use(authToken);
-
-routes.get("/user", user.getUserData);
-routes.put("/edit", user.editUser);
+routes.get("/user", authToken, user.getUserData);
+routes.put("/edit", authToken, user.editUser);
 
 // Routes Client
-routes.post("/registerClient", user.registerClient);
+routes.post("/registerClient", authToken, user.registerClient);
 
 
 module.exports = routes;
