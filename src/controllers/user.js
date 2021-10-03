@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
     const validatingData = await knex('usuarios').select('*').where('email', email);
 
     if (validatingData.length < 1) {
-      return res.json('Email não existe no sistema.');
+      return res.status(400).json('Email não existe no sistema.');
     }
 
     const dataUser = validatingData[0];
