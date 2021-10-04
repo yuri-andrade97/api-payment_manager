@@ -11,7 +11,7 @@ routes.post("/login", user.loginUser);
 routes.get("/user", authToken, user.getUserData);
 routes.put("/edit", authToken, user.editUser);
 
-// Routes Client
+// Routes Clients
 routes.post("/registerClient", authToken, client.registerClient);
 
 
