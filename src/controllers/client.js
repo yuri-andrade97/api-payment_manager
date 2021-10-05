@@ -52,6 +52,10 @@ const registerCustomer = async (req, res) => {
 const listCustomers = async (req, res) => {
 
 };
+
+const registerBilling = async (req, res) => {
+
+};
 module.exports = {
   registerCustomer,
   listCustomers,

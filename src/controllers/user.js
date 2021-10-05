@@ -105,7 +105,9 @@ const editUser = async (req, res) => {
       }
     }
 
-    const encryptedPassword = await bcrypt.hash(senha, 10);
+    if (senha) {
+      const encryptedPassword = await bcrypt.hash(senha, 10);
+    }
 
     const editingUser = await knex('usuarios').update({
       nome,
