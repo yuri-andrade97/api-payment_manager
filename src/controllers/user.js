@@ -90,16 +90,20 @@ const loginUser = async (req, res) => {
 const editUser = async (req, res) => {
   const { nome, email, senha, cpf, telefone } = req.body;
 
+  const dataForEdit = {}
+
   const user = req.infoUser
 
   try {
     await schemaEditUser.validate(req.body);
 
-    const checkIfEmailExists = await knex('usuarios').select('*').where('email', email);
+    if (user.email !== email) {
+      const emailExistsInDB = await knex('usuarios').where('email', email)
 
-    if (checkIfEmailExists.length == 1) {
-        return res.status(400).json('Email já cadastrado no sistema.');
+      if (emailExistsInDB.length >= 1) {
+        return res.status(400).json('Email já cadastrado')
       }
+    }
 
     const encryptedPassword = await bcrypt.hash(senha, 10);
 
