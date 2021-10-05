@@ -6,7 +6,7 @@ const nodemailer = require('../nodemailer');
 const schemaRegisterClient = require('../validations/schemaRegisterClient');
 
 
-const registerClient = async (req, res) => {
+const registerCustomer = async (req, res) => {
   const { nome, email, cpf, telefone, cep, logradouro, complemento, bairro, cidade, estado, referencia } = req.body
 
   const dataToken = req.infoUser;
@@ -49,6 +49,10 @@ const registerClient = async (req, res) => {
   }
 };
 
+const listCustomers = async (req, res) => {
+
+};
 module.exports = {
-  registerClient,
+  registerCustomer,
+  listCustomers,
 }
