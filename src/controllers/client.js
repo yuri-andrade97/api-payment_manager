@@ -50,7 +50,19 @@ const registerCustomer = async (req, res) => {
 };
 
 const listCustomers = async (req, res) => {
+  const user = req.infoUser;
+  //eu vou lá no banco de clientes e retorno todos os clientes que é do id user
+  try {
+    const getCustomers = await knex('clientes').select('*').where('id_usuario', user.id);
 
+    if (getCustomers.length < 1) {
+      return res.status(400).json('Usuário não possui clientes cadastrados')
+    }
+
+    return res.status(200).json(getCustomers);
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
 };
 
 const registerBilling = async (req, res) => {
