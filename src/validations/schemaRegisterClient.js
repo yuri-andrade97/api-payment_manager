@@ -10,7 +10,6 @@ const schemaRegisterClient = yup.object().shape({
   complemento: yup.string(),
   bairro: yup.string(),
   cidade: yup.string(),
-  estado: yup.string(),
   pontoDeReferencia: yup.string()
 })
 

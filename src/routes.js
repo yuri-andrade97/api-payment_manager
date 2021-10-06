@@ -17,5 +17,7 @@ routes.put("/edit", authToken, user.editUser);
 routes.post("/registerCustomers", authToken, client.registerCustomer);
 routes.get("/listCustomers", authToken, client.listCustomers);
 
+// Route Billings
+routes.post("/registerBilling", authToken, client.registerBilling);
 
 module.exports = routes;

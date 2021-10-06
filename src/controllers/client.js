@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('../nodemailer');
 
 const schemaRegisterClient = require('../validations/schemaRegisterClient');
+const schemaRegisterBilling = require('../validations/schemaRegisterBilling');
 
 
 const registerCustomer = async (req, res) => {
@@ -32,7 +33,6 @@ const registerCustomer = async (req, res) => {
       complemento,
       bairro,
       cidade,
-      estado,
       referencia
     }).returning('*')
 
@@ -54,9 +54,32 @@ const listCustomers = async (req, res) => {
 };
 
 const registerBilling = async (req, res) => {
+  const { cliente, descricao, status, valor, vencimento } = req.body;
+  const user = req.infoUser;
+
+  try {
+    await schemaRegisterBilling.validate(req.body);
+
+    const registeringBilling = await knex('cobrancas').insert({
+      id_cliente: cliente,
+      descricao,
+      status,
+      valor,
+      vencimento
+    }).returning('*')
+
+    if (registeringBilling.length !== 1) {
+      return res.status(400).json('Cobrança não cadastrada.')
+    }
+
+    return res.status(200).json('Cobrança adicionada com sucesso!')
+  } catch (error) {
+    return res.status(400).json(error.message)
+  }
 
 };
 module.exports = {
   registerCustomer,
   listCustomers,
+  registerBilling,
 }
