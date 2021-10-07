@@ -5,6 +5,7 @@ const nodemailer = require('../nodemailer');
 
 const schemaRegisterClient = require('../validations/schemaRegisterClient');
 const schemaRegisterBilling = require('../validations/schemaRegisterBilling');
+const { get } = require('../nodemailer');
 
 
 const registerCustomer = async (req, res) => {
@@ -51,7 +52,7 @@ const registerCustomer = async (req, res) => {
 
 const listCustomers = async (req, res) => {
   const user = req.infoUser;
-  //eu vou lá no banco de clientes e retorno todos os clientes que é do id user
+
   try {
     const getCustomers = await knex('clientes').select('*').where('id_usuario', user.id);
 
@@ -60,6 +61,34 @@ const listCustomers = async (req, res) => {
     }
 
     return res.status(200).json(getCustomers);
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
+};
+
+const getCustomerData = async (req, res) => {
+  const { email } = req.query;
+  const user = req.infoUser;
+
+  try {
+
+    const getCustomer = await knex('clientes')
+    .select('*')
+    .where('email', email)
+    .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente');
+
+    console.log(getCustomer)
+    console.log(`usuario auth token ${user.id}`)
+
+    if (getCustomer.length < 1) {
+      return res.status(400).json('Cliente não encontrado.')
+    }
+
+    if (getCustomer[0].id_usuario != user.id) {
+      return res.status(400).json('Não possui')
+    }
+
+    return res.status(200).json(getCustomer);
   } catch (error) {
     return res.status(400).json(error.message);
   }
@@ -94,4 +123,5 @@ module.exports = {
   registerCustomer,
   listCustomers,
   registerBilling,
+  getCustomerData,
 }

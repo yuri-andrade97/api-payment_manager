@@ -16,6 +16,7 @@ routes.put("/edit", authToken, user.editUser);
 // Routes Clients
 routes.post("/registerCustomers", authToken, client.registerCustomer);
 routes.get("/listCustomers", authToken, client.listCustomers);
+routes.get("/getCustomer", authToken, client.getCustomerData);
 
 // Route Billings
 routes.post("/registerBilling", authToken, client.registerBilling);
