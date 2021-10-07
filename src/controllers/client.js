@@ -71,7 +71,17 @@ const getCustomerBillings = async (req, res) => {
 
   try {
 
-    const getBillings = await knex('cobrancas').select('*').where('id_cliente', id);
+    const getBillings = await knex('cobrancas')
+    .select(
+      'cobrancas.id',
+      'clientes.nome',
+      'cobrancas.descricao',
+      'cobrancas.valor',
+      'cobrancas.status',
+      'cobrancas.vencimento'
+    )
+    .where('id_cliente', id)
+    .leftJoin('clientes', 'cobrancas.id_cliente', 'clientes.id');
 
     if (getBillings.length < 1) {
       return res.status(400).json('Não foi localizado cobranças para este cliente.')
