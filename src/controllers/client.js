@@ -66,32 +66,24 @@ const listCustomers = async (req, res) => {
   }
 };
 
-const getCustomerData = async (req, res) => {
-  const { email } = req.query;
-  const user = req.infoUser;
+const getCustomerBillings = async (req, res) => {
+  const { id } = req.query;
 
   try {
 
-    const getCustomer = await knex('clientes')
-    .select('*')
-    .where('email', email)
-    .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente');
+    const getBillings = await knex('cobrancas').select('*').where('id_cliente', id);
 
-    console.log(getCustomer)
-    console.log(`usuario auth token ${user.id}`)
-
-    if (getCustomer.length < 1) {
-      return res.status(400).json('Cliente não encontrado.')
+    if (getBillings.length < 1) {
+      return res.status(400).json('Não foi localizado cobranças para este cliente.')
     }
 
-    if (getCustomer[0].id_usuario != user.id) {
-      return res.status(400).json('Não possui')
-    }
+    return res.status(200).json(getBillings);
 
-    return res.status(200).json(getCustomer);
+    return console.log(getBillings)
   } catch (error) {
     return res.status(400).json(error.message);
   }
+
 };
 
 const registerBilling = async (req, res) => {
@@ -115,7 +107,7 @@ const registerBilling = async (req, res) => {
 
     return res.status(200).json('Cobrança adicionada com sucesso!')
   } catch (error) {
-    return res.status(400).json(error.message)
+    return res.status(400).json(error.message);
   }
 
 };
@@ -123,5 +115,5 @@ module.exports = {
   registerCustomer,
   listCustomers,
   registerBilling,
-  getCustomerData,
+  getCustomerBillings,
 }
