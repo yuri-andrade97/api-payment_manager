@@ -56,6 +56,7 @@ const listCustomers = async (req, res) => {
   try {
     const getCustomers = await knex('clientes')
     .select(
+      'id',
       'nome',
       'email',
       "telefone",
@@ -93,8 +94,6 @@ const getCustomerBillings = async (req, res) => {
     .leftJoin('clientes', 'cobrancas.id_cliente', 'clientes.id');
 
 
-
-
     if (getBillings.length < 1) {
       return res.status(400).json('Não foi localizado cobranças para este cliente.')
     }
@@ -104,6 +103,23 @@ const getCustomerBillings = async (req, res) => {
     return res.status(400).json(error.message);
   }
 
+};
+
+const getAllUserBillings = async (req, res) => {
+  const user = req.infoUser;
+
+  try {
+    const allBillings = await knex('cobrancas').select('*').where('id_cliente', user.id);
+
+    if (allBillings.length < 1) {
+      return res.status(400).json('O usuário não possui cobranças')
+    }
+
+    return res.status(200).json(allBillings)
+
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
 };
 
 const registerBilling = async (req, res) => {
@@ -136,4 +152,5 @@ module.exports = {
   listCustomers,
   registerBilling,
   getCustomerBillings,
+  getAllUserBillings
 }
