@@ -54,7 +54,16 @@ const listCustomers = async (req, res) => {
   const user = req.infoUser;
 
   try {
-    const getCustomers = await knex('clientes').select('*').where('id_usuario', user.id);
+    const getCustomers = await knex('clientes')
+    .select(
+      'nome',
+      'email',
+      "telefone",
+      knex.raw('sum(COALESCE(cobrancas.valor, 0)) as valorTotal')
+    )
+    .where('id_usuario', user.id)
+    .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente')
+    .groupBy('nome', 'email', 'telefone');
 
     if (getCustomers.length < 1) {
       return res.status(400).json('Usuário não possui clientes cadastrados')
@@ -83,13 +92,14 @@ const getCustomerBillings = async (req, res) => {
     .where('id_cliente', id)
     .leftJoin('clientes', 'cobrancas.id_cliente', 'clientes.id');
 
+
+
+
     if (getBillings.length < 1) {
       return res.status(400).json('Não foi localizado cobranças para este cliente.')
     }
 
     return res.status(200).json(getBillings);
-
-    return console.log(getBillings)
   } catch (error) {
     return res.status(400).json(error.message);
   }
