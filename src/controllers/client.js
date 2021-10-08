@@ -5,7 +5,7 @@ const nodemailer = require('../nodemailer');
 
 const schemaRegisterClient = require('../validations/schemaRegisterClient');
 const schemaRegisterBilling = require('../validations/schemaRegisterBilling');
-const { get } = require('../nodemailer');
+
 
 
 const registerCustomer = async (req, res) => {
@@ -56,7 +56,7 @@ const listCustomers = async (req, res) => {
   try {
     const getCustomers = await knex('clientes')
     .select(
-      'id',
+      'clientes.id',
       'nome',
       'email',
       "telefone",
@@ -64,7 +64,7 @@ const listCustomers = async (req, res) => {
     )
     .where('id_usuario', user.id)
     .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente')
-    .groupBy('nome', 'email', 'telefone');
+    .groupBy('clientes.id', 'nome', 'email', 'telefone');
 
     if (getCustomers.length < 1) {
       return res.status(400).json('Usuário não possui clientes cadastrados')
@@ -78,6 +78,7 @@ const listCustomers = async (req, res) => {
 
 const getCustomerBillings = async (req, res) => {
   const { id } = req.query;
+  const now = new Date();
 
   try {
 
