@@ -80,6 +80,8 @@ const getCustomerBillings = async (req, res) => {
   const { id } = req.query;
   const now = new Date();
 
+  console.log(+now)
+
   try {
 
     const getBillings = await knex('cobrancas')
@@ -93,6 +95,9 @@ const getCustomerBillings = async (req, res) => {
     )
     .where('id_cliente', id)
     .leftJoin('clientes', 'cobrancas.id_cliente', 'clientes.id');
+
+
+    console.log(getBillings[0].vencimento)
 
 
     if (getBillings.length < 1) {
