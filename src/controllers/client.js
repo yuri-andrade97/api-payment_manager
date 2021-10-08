@@ -109,7 +109,10 @@ const getAllUserBillings = async (req, res) => {
   const user = req.infoUser;
 
   try {
-    const allBillings = await knex('cobrancas').select('*').where('id_cliente', user.id);
+    const allBillings = await knex('cobrancas')
+    .select('*')
+    .innerJoin('clientes', 'cobrancas.id_cliente', 'clientes.id')
+    .where('clientes.id_usuario', user.id);
 
     if (allBillings.length < 1) {
       return res.status(400).json('O usuário não possui cobranças')
