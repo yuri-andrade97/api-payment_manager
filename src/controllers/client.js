@@ -80,8 +80,6 @@ const getCustomerBillings = async (req, res) => {
   const { id } = req.query;
   const now = new Date();
 
-  console.log(+now)
-
   try {
 
     const getBillings = await knex('cobrancas')
@@ -96,13 +94,21 @@ const getCustomerBillings = async (req, res) => {
     .where('id_cliente', id)
     .leftJoin('clientes', 'cobrancas.id_cliente', 'clientes.id');
 
-
-    console.log(getBillings[0].vencimento)
-
-
     if (getBillings.length < 1) {
       return res.status(400).json('Não foi localizado cobranças para este cliente.')
     }
+
+    getBillings.forEach(billing => {
+      if (+billing.vencimento > +now) {
+        console.log(+billing.vencimento)
+        console.log('now', +now)
+        billing.status = "Pendente";
+      }
+
+      if (+billing.vencimento < +now) {
+        billing.status = "Vencida"
+      }
+    });
 
     return res.status(200).json(getBillings);
   } catch (error) {

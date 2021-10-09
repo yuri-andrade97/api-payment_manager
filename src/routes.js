@@ -20,6 +20,6 @@ routes.get("/getBillings", authToken, client.getCustomerBillings);
 
 // Route Billings
 routes.post("/registerBilling", authToken, client.registerBilling);
-routes.get("/allBillings", authToken, client.getAllUserBillings);
+routes.get("/allUserBillings", authToken, client.getAllUserBillings);
 
 module.exports = routes;
