@@ -74,7 +74,14 @@ const getAllUserBillings = async (req, res) => {
 
   try {
     const allBillings = await knex('cobrancas')
-    .select('*')
+    .select(
+      'cobrancas.id',
+      'clientes.nome',
+      'cobrancas.descricao',
+      'cobrancas.valor',
+      'cobrancas.vencimento',
+      'cobrancas.status'
+    )
     .innerJoin('clientes', 'cobrancas.id_cliente', 'clientes.id')
     .where('clientes.id_usuario', user.id);
 
