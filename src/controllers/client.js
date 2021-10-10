@@ -58,7 +58,7 @@ const listCustomers = async (req, res) => {
       'nome',
       'email',
       "telefone",
-      knex.raw('sum(COALESCE(cobrancas.valor, 0)) as valorTotal')
+      knex.raw('sum(COALESCE(cobrancas.valor, 0)) as valorTotalCobrancasFeitas')
     )
     .where('id_usuario', user.id)
     .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente')
