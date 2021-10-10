@@ -90,8 +90,6 @@ const loginUser = async (req, res) => {
 const editUser = async (req, res) => {
   const { nome, email, senha, cpf, telefone } = req.body;
 
-  const dataForEdit = {}
-
   const user = req.infoUser
 
   try {
@@ -100,7 +98,7 @@ const editUser = async (req, res) => {
     if (user.email !== email) {
       const emailExistsInDB = await knex('usuarios').where('email', email)
 
-      if (emailExistsInDB.length >= 1) {
+      if (emailExistsInDB.length === 1) {
         return res.status(400).json('Email já cadastrado')
       }
     }

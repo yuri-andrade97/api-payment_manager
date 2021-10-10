@@ -1,6 +1,6 @@
 const express = require('express');
 const routes = express();
-const authToken = require('./middlewares/authToken')
+const authToken = require('./middlewares/authToken');
 
 const user = require('./controllers/user');
 const client = require('./controllers/client');
@@ -17,10 +17,14 @@ routes.put("/edit", authToken, user.editUser);
 // Routes Clients
 routes.post("/registerCustomers", authToken, client.registerCustomer);
 routes.get("/listCustomers", authToken, client.listCustomers);
-routes.get("/getBillings", authToken, billings.getCustomerBillings);
+routes.get("/getDataCustomer", authToken, client.getDataCustomer);
+routes.put("/editDataCustomer", authToken, client.editDataCustomer);
+
 
 // Route Billings
 routes.post("/registerBilling", authToken, billings.registerBilling);
 routes.get("/allUserBillings", authToken, billings.getAllUserBillings);
+routes.get("/getBillings", authToken, billings.getCustomerBillings);
+
 
 module.exports = routes;

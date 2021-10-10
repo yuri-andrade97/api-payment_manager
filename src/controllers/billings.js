@@ -35,7 +35,6 @@ const getCustomerBillings = async (req, res) => {
   const now = new Date();
 
   try {
-
     const getBillings = await knex('cobrancas')
     .select(
       'cobrancas.id',
