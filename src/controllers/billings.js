@@ -99,7 +99,7 @@ const getAllUserBillings = async (req, res) => {
         billing.status = "Pendente";
       }
 
-      if (+billing.vencimento < +now) {
+      if (+billing.vencimento < +now && billing.status !== "pago") {
         billing.status = "Vencida"
       }
     });
