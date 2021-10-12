@@ -10,21 +10,25 @@ const billings = require('./controllers/billings');
 routes.post("/signup", user.registerUser);
 routes.post("/login", user.loginUser);
 
+
 // Routes users authenticated
 routes.get("/user", authToken, user.getUserData);
 routes.put("/edit", authToken, user.editUser);
 
+
 // Routes Clients
-routes.post("/registerCustomers", authToken, client.registerCustomer);
 routes.get("/listCustomers", authToken, client.listCustomers);
 routes.get("/getDataCustomer", authToken, client.getDataCustomer);
+
+routes.post("/registerCustomers", authToken, client.registerCustomer);
 routes.put("/editDataCustomer", authToken, client.editDataCustomer);
 
 
 // Route Billings
-routes.post("/registerBilling", authToken, billings.registerBilling);
 routes.get("/allUserBillings", authToken, billings.getAllUserBillings);
 routes.get("/getBillings", authToken, billings.getCustomerBillings);
 
+routes.post("/registerBilling", authToken, billings.registerBilling);
+routes.put("/editBilling", authToken, billings.editBilling);
 
 module.exports = routes;

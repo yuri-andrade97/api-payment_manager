@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 
 const schemaRegisterBilling = require('../validations/schemaRegisterBilling');
 
+const schemaEditBilling = require('../validations/schemaEditBilling');
+
 const registerBilling = async (req, res) => {
   const { cliente, descricao, status, valor, vencimento } = req.body;
   const user = req.infoUser;
@@ -51,15 +53,19 @@ const getCustomerBillings = async (req, res) => {
       return res.status(400).json('Não foi localizado cobranças para este cliente.')
     }
 
+
     getBillings.forEach(billing => {
+
+
       if (+billing.vencimento >= +now) {
         billing.status = "Pendente";
       }
 
-      if (+billing.vencimento < +now) {
+      if (+billing.vencimento < +now && billing.status !== "pago") {
         billing.status = "Vencida"
       }
     });
+
 
     return res.status(200).json(getBillings);
   } catch (error) {
@@ -105,8 +111,35 @@ const getAllUserBillings = async (req, res) => {
   }
 };
 
+const editBilling = async (req, res) => {
+  const { id } = req.query;
+  const {
+    id_cliente, descricao, status, valor, vencimento
+  } = req.body;
+
+  try {
+    await schemaEditBilling.validate(req.body);
+
+    const editingBilling = await knex('cobrancas').update({
+      id_cliente,
+      descricao,
+      status,
+      valor,
+      vencimento
+    }).where('id', id);
+
+    return res.json(editingBilling)
+
+
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
+
+};
+
 module.exports = {
   registerBilling,
   getCustomerBillings,
-  getAllUserBillings
+  getAllUserBillings,
+  editBilling
 }

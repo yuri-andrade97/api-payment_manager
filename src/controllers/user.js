@@ -49,7 +49,7 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  const {email, senha} = req.body;
+  const { email, senha } = req.body;
 
   try {
     await schemaLoginUser.validate(req.body);

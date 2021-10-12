@@ -70,6 +70,8 @@ const listCustomers = async (req, res) => {
       return res.status(400).json('Usuário não possui clientes cadastrados')
     }
 
+    // const totalJaPago = await knex('cobrancas').select('*').
+
     return res.status(200).json(getCustomers);
   } catch (error) {
     return res.status(400).json(error.message);
