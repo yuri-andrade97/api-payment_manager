@@ -10,10 +10,13 @@ const registerBilling = async (req, res) => {
   const { cliente, descricao, status, valor, vencimento } = req.body;
   const user = req.infoUser;
 
+  console.log(user);
+
   try {
     await schemaRegisterBilling.validate(req.body);
 
     const registeringBilling = await knex('cobrancas').insert({
+      id_usuario: user.id,
       id_cliente: cliente,
       descricao,
       status,
@@ -34,6 +37,7 @@ const registerBilling = async (req, res) => {
 
 const getCustomerBillings = async (req, res) => {
   const { id } = req.query;
+  const user = req.infoUser;
   const now = new Date();
 
   try {
@@ -57,7 +61,7 @@ const getCustomerBillings = async (req, res) => {
     getBillings.forEach(billing => {
 
 
-      if (+billing.vencimento >= +now) {
+      if (+billing.vencimento >= +now && billing.status !== "pago") {
         billing.status = "pendente";
       }
 
@@ -95,7 +99,7 @@ const getAllUserBillings = async (req, res) => {
     }
 
     allBillings.forEach(billing => {
-      if (+billing.vencimento >= +now) {
+      if (+billing.vencimento >= +now && billing.status !== "pago") {
         billing.status = "pendente";
       }
 
@@ -128,7 +132,7 @@ const editBilling = async (req, res) => {
       vencimento
     }).where('id', id);
 
-    return res.json(editingBilling)
+    return res.status(200).json(editingBilling)
 
 
   } catch (error) {

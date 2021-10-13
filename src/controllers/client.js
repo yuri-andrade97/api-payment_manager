@@ -6,6 +6,7 @@ const nodemailer = require('../nodemailer');
 const schemaRegisterClient = require('../validations/schemaRegisterClient');
 const schemaEditUser = require('../validations/schemaEditUser');
 const schemaEditCustomer = require('../validations/schemaEditCustomer');
+const { get } = require('../nodemailer');
 
 
 const registerCustomer = async (req, res) => {
@@ -37,8 +38,6 @@ const registerCustomer = async (req, res) => {
       referencia
     }).returning('*')
 
-    console.log('passei')
-
     if (registeringClient.rowCount < 1) {
       return res.status(400).json('O cliente não foi cadastrado.');
     }
@@ -62,7 +61,7 @@ const listCustomers = async (req, res) => {
       "telefone",
       knex.raw('sum(COALESCE(cobrancas.valor, 0)) as valorTotalCobrancasFeitas')
     )
-    .where('id_usuario', user.id)
+    .where('clientes.id_usuario', user.id)
     .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente')
     .groupBy('clientes.id', 'nome', 'email', 'telefone');
 
@@ -70,7 +69,20 @@ const listCustomers = async (req, res) => {
       return res.status(400).json('Usuário não possui clientes cadastrados')
     }
 
-    // const totalJaPago = await knex('cobrancas').select('*').
+    const cobranças = await knex('cobrancas').select('*').where('id_usuario', user.id)
+
+    let valorTotalRecebido = 0;
+
+
+
+    cobranças.forEach(billing => {
+      if (billing.status === 'pago') {
+        valorTotalRecebido += billing.valor;
+        console.log(valorTotalRecebido)
+       getCustomers.totalPago = valorTotalRecebido
+      }
+
+    });
 
     return res.status(200).json(getCustomers);
   } catch (error) {
