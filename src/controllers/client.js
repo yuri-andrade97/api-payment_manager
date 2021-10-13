@@ -59,7 +59,8 @@ const listCustomers = async (req, res) => {
       'nome',
       'email',
       "telefone",
-      knex.raw('sum(COALESCE(cobrancas.valor, 0)) as valorTotalCobrancasFeitas')
+      knex.raw('sum(COALESCE(cobrancas.valor, 0)) as valorTotalCobrancasFeitas'),
+      knex.raw(`sum(case when cobrancas.status = 'pago' then COALESCE(cobrancas.valor, 0) else 0 end) as valorTotalCobrancasPagas`)
     )
     .where('clientes.id_usuario', user.id)
     .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente')
@@ -68,21 +69,6 @@ const listCustomers = async (req, res) => {
     if (getCustomers.length < 1) {
       return res.status(400).json('Usuário não possui clientes cadastrados')
     }
-
-    const cobranças = await knex('cobrancas').select('*').where('id_usuario', user.id)
-
-    let valorTotalRecebido = 0;
-
-
-
-    cobranças.forEach(billing => {
-      if (billing.status === 'pago') {
-        valorTotalRecebido += billing.valor;
-        console.log(valorTotalRecebido)
-       getCustomers.totalPago = valorTotalRecebido
-      }
-
-    });
 
     return res.status(200).json(getCustomers);
   } catch (error) {
