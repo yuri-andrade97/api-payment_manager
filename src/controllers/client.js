@@ -7,6 +7,7 @@ const schemaRegisterClient = require('../validations/schemaRegisterClient');
 const schemaEditUser = require('../validations/schemaEditUser');
 const schemaEditCustomer = require('../validations/schemaEditCustomer');
 const { get } = require('../nodemailer');
+const { raw } = require('express');
 
 
 const registerCustomer = async (req, res) => {
@@ -83,6 +84,7 @@ const getDataCustomer = async (req, res) => {
   try {
     const dataCustomer = await knex('clientes')
     .select(
+      'clientes.id',
       'clientes.nome',
       'clientes.cpf',
       'clientes.email',
@@ -93,14 +95,11 @@ const getDataCustomer = async (req, res) => {
       'clientes.bairro',
       'clientes.cidade',
       'clientes.referencia',
-      'cobrancas.id',
-      'cobrancas.descricao',
-      'cobrancas.vencimento',
-      'cobrancas.valor',
-      'cobrancas.status'
+      knex.raw('json_agg(cobrancas) as cobrancas')
     )
     .where('clientes.id', id)
-    .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente');
+    .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente')
+    .groupBy('clientes.id');
 
     if (dataCustomer.length < 1) {
       return res.status(400).json('Cliente não encontrado');
