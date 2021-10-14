@@ -99,7 +99,8 @@ const getDataCustomer = async (req, res) => {
     )
     .where('clientes.id', id)
     .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente')
-    .groupBy('clientes.id');
+    .groupBy('clientes.id')
+    .first();
 
     if (dataCustomer.length < 1) {
       return res.status(400).json('Cliente não encontrado');
