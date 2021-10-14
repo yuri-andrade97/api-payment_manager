@@ -28,7 +28,7 @@ const registerBilling = async (req, res) => {
       return res.status(400).json('Cobrança não cadastrada.')
     }
 
-    return res.status(200).json('Cobrança adicionada com sucesso!')
+    return res.status(200).json(registeringBilling)
   } catch (error) {
     return res.status(400).json(error.message);
   }
