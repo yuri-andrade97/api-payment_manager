@@ -26,6 +26,10 @@ const registerBilling = async (req, res) => {
       return res.status(400).json('Cobrança não cadastrada.')
     }
 
+    const getNameClient = await knex('clientes').select('nome').where('id', cliente).first()
+
+    registeringBilling[0].nome = getNameClient.nome;
+
     return res.status(200).json(registeringBilling)
   } catch (error) {
     return res.status(400).json(error.message);
