@@ -30,5 +30,6 @@ routes.get("/getBillings", authToken, billings.getCustomerBillings);
 
 routes.post("/registerBilling", authToken, billings.registerBilling);
 routes.put("/editBilling", authToken, billings.editBilling);
+routes.delete("/deleteBilling", authToken, billings.deleteBilling);
 
 module.exports = routes;

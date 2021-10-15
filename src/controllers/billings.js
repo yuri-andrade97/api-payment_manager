@@ -10,8 +10,6 @@ const registerBilling = async (req, res) => {
   const { cliente, descricao, status, valor, vencimento } = req.body;
   const user = req.infoUser;
 
-  console.log(user);
-
   try {
     await schemaRegisterBilling.validate(req.body);
 
@@ -141,9 +139,37 @@ const editBilling = async (req, res) => {
 
 };
 
+const deleteBilling = async (req, res) => {
+  const { id } = req.query;
+  const now = new Date();
+
+  try {
+    const billingForDelete = await knex('cobrancas').select('*').where('id', id).first();
+
+    if (!billingForDelete) {
+      return res.status(400).json('Cobrança não encontrada')
+    }
+
+    if (billingForDelete.status !== "pendente") {
+      return res.status(400).json('Não foi possível exclui a cobrança, pois só é possível excluir cobranças com status PENDENTE')
+    }
+
+    if (+billingForDelete.vencimento < +now) {
+      return res.status(400).json('Não foi possível excluir a cobrança, pois a data do vencimento é menor do que o dia de hoje!')
+    }
+
+    const deletingBilling = await knex('cobrancas').where('id', id).delete()
+
+    return res.status(200).json('Cobrança deletada com sucesso!')
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
+};
+
 module.exports = {
   registerBilling,
   getCustomerBillings,
   getAllUserBillings,
-  editBilling
+  editBilling,
+  deleteBilling
 }
