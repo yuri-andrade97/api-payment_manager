@@ -43,7 +43,7 @@ const registerCustomer = async (req, res) => {
       return res.status(400).json('O cliente não foi cadastrado.');
     }
 
-    return res.status(200).json('Cliente cadastrado com sucesso!');
+    return res.status(200).json(registeringClient);
 
   } catch (error) {
     return res.status(400).json(error.message);
