@@ -32,4 +32,9 @@ routes.post("/registerBilling", authToken, billings.registerBilling);
 routes.put("/editBilling", authToken, billings.editBilling);
 routes.delete("/deleteBilling", authToken, billings.deleteBilling);
 
+
+// Route Relatório
+routes.get("/gettingReport", authToken, billings.gettingReport);
+
+
 module.exports = routes;

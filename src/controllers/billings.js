@@ -79,6 +79,95 @@ const getCustomerBillings = async (req, res) => {
   }
 };
 
+const gettingReport = async (req, res) => {
+  const { status } = req.query;
+  const user = req.infoUser;
+  const now = new Date();
+
+
+  try {
+    const allBillings = await knex('cobrancas')
+    .select(
+      'nome',
+      'email',
+      'cpf',
+      'cobrancas.id',
+      'cobrancas.status',
+      'cobrancas.vencimento'
+    )
+    .innerJoin('clientes', 'cobrancas.id_cliente', 'clientes.id')
+    .where('cobrancas.id_usuario', user.id)
+
+    if (allBillings.length < 1) {
+      return res.status(400).json('Você não possui clientes/cobranças')
+    }
+
+    if (status === "em dia") {
+      const inDay = [];
+
+      allBillings.forEach(billing => {
+        if ( billing.status === "pago" || +billing.vencimento > +now) {
+          inDay.push(billing)
+        }
+      });
+
+      return res.json(inDay)
+    }
+
+    if (status === "inadimplente") {
+      const defaulting = [];
+
+      allBillings.forEach(billing => {
+        if ( billing.status === "vencida" || +billing.vencimento < +now) {
+          defaulting.push(billing)
+        }
+      });
+      return res.json(defaulting)
+    }
+
+    if (status === "previstas") {
+      const predicted = [];
+
+      allBillings.forEach(billing => {
+        if (billing.status === "pendente" && +billing.vencimento>= +now) {
+          predicted.push(billing)
+        }
+      });
+
+      return res.json(predicted)
+    }
+
+    if (status === "pagas") {
+      const paid = [];
+
+      allBillings.forEach(billing => {
+        if (billing.status === "pago") {
+          paid.push(billing)
+        }
+      });
+
+      return res.json(paid)
+    }
+
+    if (status === "vencidas") {
+      const paid = [];
+
+      allBillings.forEach(billing => {
+        if (billing.status === "pendente" && +billing.vencimento < +now) {
+          paid.push(billing)
+        }
+      });
+
+      return res.json(paid)
+    }
+
+    return res.status(200).json(allBillings)
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
+
+};
+
 const getAllUserBillings = async (req, res) => {
   const user = req.infoUser;
   const now = new Date();
@@ -175,5 +264,6 @@ module.exports = {
   getCustomerBillings,
   getAllUserBillings,
   editBilling,
-  deleteBilling
+  deleteBilling,
+  gettingReport
 }

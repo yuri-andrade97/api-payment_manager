@@ -1,14 +1,9 @@
 const knex = require('../config/connection');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('../nodemailer');
 
 const schemaRegisterClient = require('../validations/schemaRegisterClient');
-const schemaEditUser = require('../validations/schemaEditUser');
 const schemaEditCustomer = require('../validations/schemaEditCustomer');
-const { get } = require('../nodemailer');
-const { raw } = require('express');
-
 
 const registerCustomer = async (req, res) => {
   const { nome, email, cpf, telefone, cep, logradouro, complemento, bairro, cidade, estado, referencia } = req.body
