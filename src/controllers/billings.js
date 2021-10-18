@@ -102,7 +102,7 @@ const gettingReport = async (req, res) => {
       return res.status(400).json('Você não possui clientes/cobranças')
     }
 
-    if (status === "em dia") {
+    if (status === "em-dia") {
       const inDay = [];
 
       allBillings.forEach(billing => {
