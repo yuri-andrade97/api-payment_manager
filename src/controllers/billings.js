@@ -177,6 +177,8 @@ const getAllUserBillings = async (req, res) => {
     .select(
       'cobrancas.id',
       'clientes.nome',
+      'clientes.cpf',
+      'clientes.email',
       'cobrancas.descricao',
       'cobrancas.valor',
       'cobrancas.vencimento',
