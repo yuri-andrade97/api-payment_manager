@@ -114,7 +114,7 @@ const gettingReport = async (req, res) => {
       return res.json(inDay)
     }
 
-    if (status === "inadimplente") {
+    if (status === "inadimplentes") {
       const defaulting = [];
 
       allBillings.forEach(billing => {
