@@ -52,6 +52,7 @@ const listCustomers = async (req, res) => {
     const getCustomers = await knex('clientes')
     .select(
       'clientes.id',
+      'clientes.cpf',
       'nome',
       'email',
       "telefone",
@@ -60,7 +61,7 @@ const listCustomers = async (req, res) => {
     )
     .where('clientes.id_usuario', user.id)
     .leftJoin('cobrancas', 'clientes.id', 'cobrancas.id_cliente')
-    .groupBy('clientes.id', 'nome', 'email', 'telefone');
+    .groupBy('clientes.id', 'clientes.cpf', 'nome', 'email', 'telefone');
 
     if (getCustomers.length < 1) {
       return res.status(400).json('Usuário não possui clientes cadastrados')
