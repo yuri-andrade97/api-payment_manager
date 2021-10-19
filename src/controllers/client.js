@@ -163,10 +163,49 @@ const editDataCustomer = async (req, res) => {
   }
 };
 
+const getDataToHome = async (req, res) => {
+  const user = req.infoUser;
+  const now = new Date();
+
+  try {
+    const allBillings = await knex('cobrancas').select('*').where('id_usuario', user.id);
+
+    if (allBillings.length < 1) {
+      return res.status(400).json('O usuário não possui cobranças.');
+    }
+
+    const inDay = allBillings.filter(billing => billing.status === "pago" || +billing.vencimento > +now)
+
+    const defaulting = allBillings.filter(billing => billing.status === "vencida" || +billing.vencimento < +now)
+
+    const predicted = allBillings.filter(billing => billing.status === "pendente" && +billing.vencimento>= +now)
+
+    const paid = allBillings.filter(billing => billing.status === "pago")
+
+    const expired = allBillings.filter(billing => billing.status === "pendente" && +billing.vencimento < +now)
+
+    const clients = {
+      emDia: inDay.length,
+      inadimplentes: defaulting.length
+    }
+
+    const billings = {
+      previstas: predicted.length,
+      pagas: paid.length,
+      vencidas: expired.length
+    }
+
+    return res.status(200).json({clients, billings})
+  } catch (error) {
+    return res.status(400).json(error.message);
+  }
+};
+
 
 module.exports = {
   registerCustomer,
   listCustomers,
   getDataCustomer,
-  editDataCustomer
+  editDataCustomer,
+  getDataToHome
 }

@@ -118,7 +118,7 @@ const gettingReport = async (req, res) => {
       const defaulting = [];
 
       allBillings.forEach(billing => {
-        if ( billing.status === "vencida" || +billing.vencimento < +now) {
+        if (billing.status === "vencida" || +billing.vencimento < +now) {
           defaulting.push(billing)
         }
       });
@@ -150,15 +150,15 @@ const gettingReport = async (req, res) => {
     }
 
     if (status === "vencidas") {
-      const paid = [];
+      const expired = [];
 
       allBillings.forEach(billing => {
         if (billing.status === "pendente" && +billing.vencimento < +now) {
-          paid.push(billing)
+          expired.push(billing)
         }
       });
 
-      return res.json(paid)
+      return res.json(expired)
     }
 
     return res.status(200).json(allBillings)

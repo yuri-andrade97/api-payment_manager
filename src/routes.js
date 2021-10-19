@@ -35,6 +35,7 @@ routes.delete("/deleteBilling", authToken, billings.deleteBilling);
 
 // Route Relatório
 routes.get("/gettingReport", authToken, billings.gettingReport);
+routes.get("/getDataToHome", authToken, client.getDataToHome);
 
 
 module.exports = routes;
